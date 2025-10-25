@@ -36,6 +36,7 @@ public class SquidHeadControls : MonoBehaviour
     void Start()
     {
         //rb = GetComponent<Rigidbody2D>();
+        //moveSpeed = headTarget.gameObject.GetComponent<SquidController>().moveSpeed;
     }
 
     // Update is called once per frame

@@ -10,13 +10,22 @@ public class SquidController : MonoBehaviour
     private Vector2 direction;
 
     public float moveSpeed;
+    public SquidHeadControls squidSprite;
+    public float dashSpeedMult = 2f;
+    public float dashDuration = .25f;
+    
+    private bool hasDashed = false;
 
     public PlayerControls playerControls;
     private InputAction move;
+    private InputAction dash;
+    //public float squidSpriteSpeed;
 
     private void Awake()
     {
         playerControls = new PlayerControls();
+        //squidSpriteSpeed = squidSprite.GetComponent<SquidHeadControls>().moveSpeed;
+        
     }
 
     private void OnEnable()
@@ -24,11 +33,14 @@ public class SquidController : MonoBehaviour
         move = playerControls.Player.Move;
         move.Enable();
 
+        dash = playerControls.Player.Dash;
+        dash.Enable();
     }
 
     private void OnDisable()
     {
         move.Disable();
+        dash.Disable();
     }
 
     // Start is called before the first frame update
@@ -51,10 +63,38 @@ public class SquidController : MonoBehaviour
         */
 
         direction = move.ReadValue<Vector2>();
+
+        if (dash.WasPressedThisFrame() && hasDashed == false)
+        {
+            StartCoroutine(PlayerDash());
+        }
     }
 
     private void FixedUpdate()
     {
         rb.velocity = new Vector2(direction.x * moveSpeed, direction.y * moveSpeed);
+    }
+
+    /*
+    private void PlayerDash()
+    {
+
+    }
+    */
+
+    IEnumerator PlayerDash()
+    {
+        float initialSpeed = moveSpeed;
+        float initialSquidSpeed = squidSprite.moveSpeed;
+        moveSpeed *= dashSpeedMult;
+        squidSprite.moveSpeed = moveSpeed;
+        hasDashed = true;
+
+        //Debug.Log("Squid Speed: " +  squidSprite.moveSpeed);
+        yield return new WaitForSeconds(dashDuration);
+
+        moveSpeed = initialSpeed;
+        squidSprite.moveSpeed = initialSquidSpeed;
+        hasDashed = false;
     }
 }
