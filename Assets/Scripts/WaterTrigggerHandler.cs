@@ -48,6 +48,7 @@ public class WaterTrigggerHandler : MonoBehaviour
                 Instantiate(_splashParticles, spawnPos, Quaternion.identity);
                 */
 
+                /*
                 Vector2 localPos = gameObject.transform.localPosition;
                 if (collision.transform.position.y >= _edgeColl.points[1].y + _edgeColl.offset.y + localPos.y)
                 {
@@ -61,6 +62,7 @@ public class WaterTrigggerHandler : MonoBehaviour
                     rb.gravityScale = 1f;
                     Debug.Log("BELOW grav scale: " +  rb.gravityScale);
                 }
+                */
 
                 //clamp splash point to a MAX velocity -------------------------------------
 
