@@ -7,10 +7,11 @@ public class SquidController : MonoBehaviour
 {
     public Rigidbody2D rb;
     public float rotationSpeed;
-    private Vector2 direction;
+
+    public GameObject target;
 
     public float moveSpeed;
-    //public SquidHeadControls squidSprite;
+    public GameObject squidSprite;
     public float dashSpeedMult = 2f;
     public float dashDuration = .25f;
     
@@ -19,15 +20,19 @@ public class SquidController : MonoBehaviour
     public PlayerControls playerControls;
     private InputAction move;
     private InputAction dash;
-    //public float squidSpriteSpeed;
 
     public bool hitWater;
+    public bool inWater;
+
+    private Vector2 velocity = Vector2.zero;
+
+    private Vector2 inputVal;
     
 
     private void Awake()
     {
         playerControls = new PlayerControls();
-        //squidSpriteSpeed = squidSprite.GetComponent<SquidHeadControls>().moveSpeed;
+        
         
     }
 
@@ -66,25 +71,73 @@ public class SquidController : MonoBehaviour
         transform.position = Vector2.MoveTowards(transform.position, cursorPos, moveSpeed * Time.deltaTime);
         */
 
-        
+
         //Debug.Log(move.ReadValue<Vector2>());
-        Vector3 posChange = transform.up * move.ReadValue<Vector2>().y + transform.right * move.ReadValue<Vector2>().x; //stop effecting up axis while above water
-        posChange = posChange * moveSpeed * Time.deltaTime;
-
-        transform.position += posChange;
+        /*
+        float angle = Mathf.Atan2(target.transform.position.y, target.transform.position.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+        */
         
 
-
-        if (dash.WasPressedThisFrame() && hasDashed == false)
+        if (inWater != true)
         {
-            StartCoroutine(PlayerDash());
+            /*
+            inputVal = Vector2.zero;
+
+            Vector3 posChange = transform.up * inputVal.y + transform.right * inputVal.x; //stop effecting up axis while above water
+            posChange = posChange * moveSpeed * Time.deltaTime;
+
+            transform.position += posChange;
+
+            Vector3 movementDir = new Vector3(move.ReadValue<Vector2>().x, move.ReadValue<Vector2>().y, 0);
+            movementDir.Normalize();
+
+            if (movementDir != Vector3.zero)
+            {
+                //squidSprite.transform.right = movementDir;
+                squidSprite.transform.right = Vector3.Lerp(squidSprite.transform.right, movementDir, rotationSpeed * Time.deltaTime);
+            }
+
+
+            if (dash.WasPressedThisFrame() && hasDashed == false)
+            {
+                StartCoroutine(PlayerDash());
+            }
+            */
+            Vector3 force = new Vector3(1, 1, 0);
+            //rb.AddForce(force, ForceMode2D.Impulse);
         }
+        else
+        {
+            inputVal = move.ReadValue<Vector2>();
+
+            Vector3 posChange = transform.up * inputVal.y + transform.right * inputVal.x; //stop effecting up axis while above water
+            posChange = posChange * moveSpeed * Time.deltaTime;
+
+            transform.position += posChange;
+
+            Vector3 movementDir = new Vector3(move.ReadValue<Vector2>().x, move.ReadValue<Vector2>().y, 0);
+            movementDir.Normalize();
+
+            if (movementDir != Vector3.zero)
+            {
+                //squidSprite.transform.right = movementDir;
+                squidSprite.transform.right = Vector3.Lerp(squidSprite.transform.right, movementDir, rotationSpeed * Time.deltaTime);
+            }
+
+
+            if (dash.WasPressedThisFrame() && hasDashed == false)
+            {
+                StartCoroutine(PlayerDash());
+            }
+        }
+
+        
     }
 
     private void FixedUpdate()
     {
-        //rb.velocity = new Vector2(direction.x * moveSpeed, direction.y * moveSpeed);
-
         if (hitWater == true)
         {
             //rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, Time.deltaTime * 1);
@@ -122,4 +175,5 @@ public class SquidController : MonoBehaviour
 
         rb.velocity = finalVel;
     }
+
 }
