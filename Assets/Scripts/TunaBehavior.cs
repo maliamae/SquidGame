@@ -21,7 +21,9 @@ public class TunaBehavior : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Player")
         {
-            Destroy(collision.gameObject);
+            //Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
+            //collision.gameObject.transform.parent.gameObject.SetActive(false);
         }
         //Debug.Log("tuna collides");
     }

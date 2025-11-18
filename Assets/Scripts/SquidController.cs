@@ -6,16 +6,14 @@ using UnityEngine.InputSystem;
 public class SquidController : MonoBehaviour
 {
     public Rigidbody2D rb;
-    public float rotationSpeed;
+    public float rotationSpeed = 15f;
 
-    public GameObject target;
-
-    public float moveSpeed;
+    public float moveSpeed = 20f;
     public GameObject squidSprite;
     public float dashSpeedMult = 2f;
     public float dashDuration = .25f;
     
-    private bool hasDashed = false;
+    public bool hasDashed = false;
 
     public PlayerControls playerControls;
     private InputAction move;
@@ -23,10 +21,12 @@ public class SquidController : MonoBehaviour
 
     public bool hitWater;
     public bool inWater;
+    public bool hasSpedUp = false;
 
-    private Vector2 velocity = Vector2.zero;
+    public Vector3 velocity;
 
     private Vector2 inputVal;
+    
     
 
     private void Awake()
@@ -79,7 +79,7 @@ public class SquidController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
         */
         
-
+        StartCoroutine(CalculateVel());
         if (inWater != true)
         {
             /*
@@ -105,14 +105,31 @@ public class SquidController : MonoBehaviour
                 StartCoroutine(PlayerDash());
             }
             */
-            Vector3 force = new Vector3(1, 1, 0);
+            //Vector3 force = new Vector3(1, 1, 0);
             //rb.AddForce(force, ForceMode2D.Impulse);
+            
+
+            if (rb.velocity != Vector2.zero)
+            {
+                //squidSprite.transform.right = movementDir;
+                squidSprite.transform.right = Vector3.Lerp(squidSprite.transform.right, rb.velocity, rotationSpeed * Time.deltaTime);
+                
+            }
+
+            /*
+            if (hasSpedUp != true)
+            {
+                rb.velocity *= 2;
+                hasSpedUp = true;
+            }
+            */
+            
         }
         else
         {
             inputVal = move.ReadValue<Vector2>();
 
-            Vector3 posChange = transform.up * inputVal.y + transform.right * inputVal.x; //stop effecting up axis while above water
+            Vector3 posChange = transform.up * inputVal.y + transform.right * inputVal.x; 
             posChange = posChange * moveSpeed * Time.deltaTime;
 
             transform.position += posChange;
@@ -134,6 +151,8 @@ public class SquidController : MonoBehaviour
         }
 
         
+
+
     }
 
     private void FixedUpdate()
@@ -159,6 +178,7 @@ public class SquidController : MonoBehaviour
         moveSpeed = initialSpeed;
         //squidSprite.moveSpeed = initialSquidSpeed;
         hasDashed = false;
+        
     }
 
     IEnumerator LerpVelocity(Vector2 initialVel, Vector2 finalVel, float duration)
@@ -174,6 +194,28 @@ public class SquidController : MonoBehaviour
         }
 
         rb.velocity = finalVel;
+        
+    }
+
+    IEnumerator CalculateVel()
+    {
+        Vector3 previousPos = transform.position;
+        yield return new WaitForEndOfFrame();
+
+        velocity = (transform.position - previousPos)/Time.deltaTime;
+        //Debug.Log("Custom vel: " + velocity.normalized);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Rock")
+        {
+            float pushX = Random.Range(-1f, 1f);
+            float pushY = Random.Range(-1f, 1f);
+            rb.AddForce(new Vector2(pushX*3, pushY*3), ForceMode2D.Impulse);
+
+            Debug.Log("Rock Hit");
+        }
     }
 
 }
