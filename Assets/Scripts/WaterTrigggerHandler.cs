@@ -5,6 +5,8 @@ using UnityEngine;
 public class WaterTrigggerHandler : MonoBehaviour
 {
     [SerializeField] private LayerMask _waterMask;
+    public AudioSource waterAudio;
+
     //[SerializeField] private GameObject _splashParticles;
 
     private EdgeCollider2D _edgeColl;
@@ -78,6 +80,8 @@ public class WaterTrigggerHandler : MonoBehaviour
                 vel *= multiplier;
 
                 _water.Splash(collision, vel);
+
+                waterAudio.Play();
 
             }
         }

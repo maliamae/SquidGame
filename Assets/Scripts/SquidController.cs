@@ -216,6 +216,10 @@ public class SquidController : MonoBehaviour
 
             Debug.Log("Rock Hit");
         }
+        if (collision.gameObject.tag == "Boat")
+        {
+            Debug.Log("BOAT");
+        }
     }
 
 }

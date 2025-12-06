@@ -8,7 +8,9 @@ public class WindCurrentBehavior : MonoBehaviour
     public Vector3 newVel;
     public Vector3 targetVel;
     private Rigidbody2D playerRB;
+    public AudioSource windAudio;
 
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "Player")
@@ -17,7 +19,9 @@ public class WindCurrentBehavior : MonoBehaviour
 
             currentVel = collision.gameObject.GetComponentInParent<SquidController>().rb.velocity;
 
-            Debug.Log("whoosh");
+            //Debug.Log("whoosh");
+            windAudio.Play();
+
             newVel = new Vector3(currentVel.x * 1.25f, -currentVel.y, 0);
             targetVel = new Vector3(newVel.x, 0f, 0f);
 

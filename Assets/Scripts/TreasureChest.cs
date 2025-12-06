@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneTransition : MonoBehaviour
+public class TreasureChest : MonoBehaviour
 {
     public int targetScene;
     public CrossFadeImage blackScreen;
-    public void ChangeScene()
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        StartCoroutine(Transition());
+        if (collision.gameObject.tag == "Player")
+        {
+            StartCoroutine(Transition());
+        }
     }
 
     public IEnumerator Transition()
