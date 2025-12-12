@@ -1,9 +1,11 @@
+//#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(EdgeCollider2D))]
 [RequireComponent(typeof(WaterTrigggerHandler))]
@@ -216,6 +218,7 @@ public class InteractableWater : MonoBehaviour
     }
 }
 
+//#if UNITY_EDITOR
 [CustomEditor(typeof(InteractableWater))]
 
 public class InteractableWaterEditor : Editor
@@ -314,5 +317,8 @@ public class InteractableWaterEditor : Editor
         {
             _water.GenerateMesh();
         }
+        
     }
+
 }
+//#endif //UNITY_EDITOR
