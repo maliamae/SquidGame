@@ -22,7 +22,7 @@ public class SquidRespawn : MonoBehaviour
     IEnumerator Respawn()
     {
         StartCoroutine(blackScreen.AnimateIn());
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(.5f);
         squidObject.transform.position = spawnPoint.transform.position;
         squidObject.GetComponent<Rigidbody2D>().gravityScale = 1f;
         squidObject.SetActive(true);
